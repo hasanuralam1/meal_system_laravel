@@ -12,7 +12,7 @@ class DustbinController extends Controller
     /**
      * List all dustbin entries
      */
-    public function index()
+    public function getAllDustbin()
     {
         return response()->json([
             'status' => true,
@@ -23,7 +23,7 @@ class DustbinController extends Controller
     /**
      * Create dustbin entry
      */
-    public function store(Request $request)
+    public function setDustbinDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id'  => 'required|exists:users,id',
@@ -50,7 +50,7 @@ class DustbinController extends Controller
     /**
      * Show single dustbin entry
      */
-    public function show($id)
+    public function getDustbin_ById($id)
     {
         $dustbin = Dustbin::with('user')->find($id);
 
@@ -70,7 +70,7 @@ class DustbinController extends Controller
     /**
      * Update dustbin entry
      */
-    public function update(Request $request, $id)
+    public function updateDustbin(Request $request, $id)
     {
         $dustbin = Dustbin::find($id);
 
@@ -106,7 +106,7 @@ class DustbinController extends Controller
     /**
      * Delete dustbin entry
      */
-    public function destroy($id)
+    public function deleteDustbin($id)
     {
         $dustbin = Dustbin::find($id);
 

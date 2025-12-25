@@ -12,7 +12,7 @@ class UserMealController extends Controller
     /**
      * List all user meals
      */
-    public function index()
+    public function getusersAllMeal()
     {
         return response()->json([
             'status' => true,
@@ -23,7 +23,7 @@ class UserMealController extends Controller
     /**
      * Create user meal entry
      */
-    public function store(Request $request)
+    public function usermealDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id'   => 'required|exists:users,id',
@@ -51,7 +51,7 @@ class UserMealController extends Controller
     /**
      * Show single user meal
      */
-    public function show($id)
+    public function getuserMeal_byId($id)
     {
         $userMeal = UserMeal::with('user')->find($id);
 
@@ -71,7 +71,7 @@ class UserMealController extends Controller
     /**
      * Update user meal
      */
-    public function update(Request $request, $id)
+    public function updateUserMeal(Request $request, $id)
     {
         $userMeal = UserMeal::find($id);
 
@@ -108,7 +108,7 @@ class UserMealController extends Controller
     /**
      * Delete user meal
      */
-    public function destroy($id)
+    public function deleteUserMeal($id)
     {
         $userMeal = UserMeal::find($id);
 

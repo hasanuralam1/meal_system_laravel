@@ -12,7 +12,7 @@ class MarketingController extends Controller
     /**
      * List all marketing entries
      */
-    public function index()
+    public function getAllMarketing()
     {
         return response()->json([
             'status' => true,
@@ -23,7 +23,7 @@ class MarketingController extends Controller
     /**
      * Create marketing entry
      */
-    public function store(Request $request)
+    public function RegisterMarketing(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
@@ -51,7 +51,7 @@ class MarketingController extends Controller
     /**
      * Show single marketing entry
      */
-    public function show($id)
+    public function getMarketing_byId($id)
     {
         $marketing = Marketing::with('user')->find($id);
 
@@ -71,7 +71,7 @@ class MarketingController extends Controller
     /**
      * Update marketing entry
      */
-    public function update(Request $request, $id)
+    public function updateMarketing(Request $request, $id)
     {
         $marketing = Marketing::find($id);
 
@@ -108,7 +108,7 @@ class MarketingController extends Controller
     /**
      * Delete marketing entry
      */
-    public function destroy($id)
+    public function deleteMarket($id)
     {
         $marketing = Marketing::find($id);
 

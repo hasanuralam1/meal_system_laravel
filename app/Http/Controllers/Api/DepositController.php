@@ -12,7 +12,7 @@ class DepositController extends Controller
     /**
      * List all deposits
      */
-    public function index()
+    public function getAllDeposite()
     {
         return response()->json([
             'status' => true,
@@ -23,7 +23,7 @@ class DepositController extends Controller
     /**
      * Create deposit
      */
-    public function store(Request $request)
+    public function addDeposite(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
@@ -51,7 +51,7 @@ class DepositController extends Controller
     /**
      * Show single deposit
      */
-    public function show($id)
+    public function getDeposite_byId($id)
     {
         $deposit = Deposit::with('user')->find($id);
 
@@ -71,7 +71,7 @@ class DepositController extends Controller
     /**
      * Update deposit
      */
-    public function update(Request $request, $id)
+    public function updateDeposite(Request $request, $id)
     {
         $deposit = Deposit::find($id);
 
@@ -108,7 +108,7 @@ class DepositController extends Controller
     }
 
     // Delete Deposite
-    public function destroy($id)
+    public function deleteDeposite($id)
     {
         $deposit = Deposit::find($id);
 

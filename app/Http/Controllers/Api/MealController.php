@@ -12,7 +12,7 @@ class MealController extends Controller
     /**
      * List all meals
      */
-    public function index()
+    public function getAllmeals()
     {
         return response()->json([
             'status' => true,
@@ -23,7 +23,7 @@ class MealController extends Controller
     /**
      * Create meal
      */
-    public function store(Request $request)
+    public function mealDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'meal_name' => 'required|string|max:255',
@@ -52,7 +52,7 @@ class MealController extends Controller
     /**
      * Show single meal
      */
-    public function show($id)
+    public function getmeal_ById($id)
     {
         $meal = Meal::find($id);
 
@@ -72,7 +72,7 @@ class MealController extends Controller
     /**
      * Update meal
      */
-    public function update(Request $request, $id)
+    public function updateMeal(Request $request, $id)
     {
         $meal = Meal::find($id);
 
@@ -110,7 +110,7 @@ class MealController extends Controller
     /**
      * Delete meal
      */
-    public function destroy($id)
+    public function deleteMeal($id)
     {
         $meal = Meal::find($id);
 
