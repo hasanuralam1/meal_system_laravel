@@ -49,7 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/fetch_all', [MarketingController::class, 'getAllMarketing']);    //fetch all marketing
             Route::post('/create', [MarketingController::class, 'RegisterMarketing']);  //register market details
             Route::get('/fetch/{id}', [MarketingController::class, 'getMarketing_byId']);  //fetch marketing by id
-            Route::get('/update/{id}', [MarketingController::class, 'updateMarket']);  //update  marketing
+            Route::post('/update/{id}', [MarketingController::class, 'updateMarketing']);  //update  marketing
         });
 
 
