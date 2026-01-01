@@ -16,7 +16,8 @@ class UserMeal extends Model
         'user_id',
         'user_name',
         'date',
-        'status',
+        'day',
+        'night',
     ];
 
     // Relationship with User

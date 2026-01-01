@@ -29,7 +29,8 @@ class UserMealController extends Controller
             'user_id'   => 'required|exists:users,id',
             'user_name' => 'required|string|max:255',
             'date'      => 'required|date',
-            'status'    => 'required|in:eat,not',
+            'day'    => 'required|in:eat,not',
+            'night'    => 'required|in:eat,not',
         ]);
 
         if ($validator->fails()) {
@@ -86,7 +87,8 @@ class UserMealController extends Controller
             'user_id'   => 'sometimes|exists:users,id',
             'user_name' => 'sometimes|string|max:255',
             'date'      => 'sometimes|date',
-            'status'    => 'sometimes|in:eat,not',
+            'day'    => 'sometimes|in:eat,not',
+            'night'    => 'sometimes|in:eat,not',
         ]);
 
         if ($validator->fails()) {
