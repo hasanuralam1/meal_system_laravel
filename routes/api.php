@@ -8,10 +8,24 @@ use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\MarketingController;
 use App\Http\Controllers\Api\DustbinController;
 use App\Http\Controllers\Api\UserMealController;
+use App\Http\Controllers\AdminEmailController;
+
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MealNotificationMail;
+
+Mail::to('hasanuralam737@gmail.com')
+    ->send(new MealNotificationMail('You have eaten 2 meals today'));
+
 
 // Public Routes (No Login Required)
 Route::post('/register', [UserController::class, 'createUser']);    //user registration
 Route::post('/login', [UserController::class, 'login']);
+
+
+Mail::raw('Test mail', function ($m) {
+    $m->to('hasanuralam5750@gmail.com')->subject('Test');
+});
+
 
 // Protected Routes (Sanctum Authentication)
 Route::middleware('auth:sanctum')->group(function () {
@@ -77,6 +91,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // users
         Route::get('/users', [UserController::class, 'index']);     // fetch all user
       
+         Route::post('/send-meal-email', [AdminEmailController::class, 'indexsendMealEmail']); 
+
 
         Route::prefix('meals')->group(function(){
             Route::post('/create', [MealController::class, 'mealDetails']);       //meal details
