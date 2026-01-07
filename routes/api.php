@@ -13,8 +13,8 @@ use App\Http\Controllers\AdminEmailController;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MealNotificationMail;
 
-Mail::to('hasanuralam737@gmail.com')
-    ->send(new MealNotificationMail('You have eaten 2 meals today'));
+// Mail::to('hasanuralam737@gmail.com')
+//     ->send(new MealNotificationMail('You have eaten 2 meals today'));
 
 
 // Public Routes (No Login Required)
@@ -22,9 +22,9 @@ Route::post('/register', [UserController::class, 'createUser']);    //user regis
 Route::post('/login', [UserController::class, 'login']);
 
 
-Mail::raw('Test mail', function ($m) {
-    $m->to('hasanuralam5750@gmail.com')->subject('Test');
-});
+// Mail::raw('Test mail', function ($m) {
+//     $m->to('hasanuralam5750@gmail.com')->subject('Test');
+// });
 
 
 // Protected Routes (Sanctum Authentication)
@@ -38,20 +38,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
      Route::prefix('meals')->group(function(){
-            Route::get('/fetch_all', [MealController::class, 'getAllmeals']);    //fetch all meals
+            Route::post('/fetch_all', [MealController::class, 'getAllmeals']);    //fetch all meals
             Route::get('/fetch/{id}', [MealController::class, 'getmeal_ById']);    //fetch meal by id
         });
 
 
       Route::prefix('dustbin')->group(function(){
-            Route::get('/fetch_all', [DustbinController::class, 'getAllDustbin']);     //fetch all dustbin details
+            Route::post('/fetch_all', [DustbinController::class, 'getAllDustbin']);     //fetch all dustbin details
             Route::get('/fetch/{id}', [DustbinController::class, 'getDustbin_ById']);   //fetch dustbin by id
          });
 
       
         // Deposite Routes
         Route::prefix('deposits')->group(function(){
-            Route::get('/fetch_all', [DepositController::class, 'getAllDeposite']);          // fetch deposite by id  
+            Route::post('/fetch_all', [DepositController::class, 'getAllDeposite']);          // fetch deposite by id  
             Route::post('/create', [DepositController::class, 'addDeposite']);            // create deposite 
             Route::get('/fetch/{id}', [DepositController::class, 'getDeposite_byId']);   // fetch deposite by id  
         });  
@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
           //  Marketing Routes
         Route::prefix('marketing')->group(function(){
-            Route::get('/fetch_all', [MarketingController::class, 'getAllMarketing']);    //fetch all marketing
+            Route::post('/fetch_all', [MarketingController::class, 'getAllMarketing']);    //fetch all marketing
             Route::post('/create', [MarketingController::class, 'RegisterMarketing']);  //register market details
             Route::get('/fetch/{id}', [MarketingController::class, 'getMarketing_byId']);  //fetch marketing by id
             Route::post('/update/{id}', [MarketingController::class, 'updateMarketing']);  //update  marketing
@@ -68,7 +68,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
          Route::prefix('user_meal')->group(function(){
-            Route::get('/fetch_all', [UserMealController::class, 'getusersAllMeal']);      //fetch user all meal
+            Route::post('/fetch_all', [UserMealController::class, 'getusersAllMeal']);      //fetch user all meal
             Route::get('/fetch/{id}', [UserMealController::class, 'getuserMeal_byId']);     // fetch user meal by id
              });
 
@@ -89,7 +89,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin')->group(function () {
 
         // users
-        Route::get('/users', [UserController::class, 'index']);     // fetch all user
+        Route::post('/users', [UserController::class, 'index']);     // fetch all user
       
          Route::post('/send-meal-email', [AdminEmailController::class, 'indexsendMealEmail']); 
 

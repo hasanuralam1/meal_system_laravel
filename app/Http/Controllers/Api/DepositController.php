@@ -9,16 +9,68 @@ use Illuminate\Support\Facades\Validator;
 
 class DepositController extends Controller
 {
-    /**
-     * List all deposits
-     */
-    public function getAllDeposite()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => Deposit::with('user')->latest()->get()
-        ]);
+    
+
+public function getAllDeposite(Request $request)
+{
+    $query = Deposit::with('user');
+
+    // ✅ Filters (from JSON body)
+    if ($request->has('filters')) {
+
+        $filters = $request->filters;
+
+        // 🔹 Filter by User Name
+        if (!empty($filters['name'])) {
+            $query->whereHas('user', function ($q) use ($filters) {
+                $q->where('name', 'LIKE', '%' . $filters['name'] . '%');
+            });
+        }
+
+        // 🔹 Min Amount
+        if (!empty($filters['min_amount'])) {
+            $query->where('amount', '>=', $filters['min_amount']);
+        }
+
+        // 🔹 Max Amount
+        if (!empty($filters['max_amount'])) {
+            $query->where('amount', '<=', $filters['max_amount']);
+        }
+
+        // 🔹 Date Filter
+        if (!empty($filters['date'])) {
+            $query->whereDate('date', $filters['date']);
+        }
+
+        // 🔹 Mode Filter
+        if (!empty($filters['mode'])) {
+            $query->where('mode', $filters['mode']);
+        }
     }
+
+    // ✅ Pagination
+    $limit  = $request->pagination['limit']  ?? 10;
+    $offset = $request->pagination['offset'] ?? 0;
+
+    // ✅ Total count (after filters)
+    $total = $query->count();
+
+    // ✅ Fetch data
+    $data = $query->latest()
+                  ->offset($offset)
+                  ->limit($limit)
+                  ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => (int) $limit,
+        'offset' => (int) $offset,
+        'data'   => $data
+    ]);
+}
+
+
 
     /**
      * Create deposit

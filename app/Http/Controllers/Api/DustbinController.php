@@ -12,13 +12,55 @@ class DustbinController extends Controller
     /**
      * List all dustbin entries
      */
-    public function getAllDustbin()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => Dustbin::with('user')->latest()->get()
-        ]);
+  
+public function getAllDustbin(Request $request)
+{
+    // Read JSON body values
+    $date     = $request->input('date');        // YYYY-MM-DD
+    $dayName  = $request->input('day_name');    // monday, tuesday...
+    $userName = $request->input('user_name');   // username / name
+    $limit    = $request->input('limit', 10);   // default 10
+    $offset   = $request->input('offset', 0);   // default 0
+
+    // Base query with user relation
+    $query = Dustbin::with('user');
+
+    // Filter by date
+    if (!empty($date)) {
+        $query->whereDate('date', $date);
     }
+
+    // Filter by day name
+    if (!empty($dayName)) {
+        $query->where('day_name', $dayName);
+    }
+
+    // Filter by user name
+    if (!empty($userName)) {
+        $query->whereHas('user', function ($q) use ($userName) {
+            $q->where('name', 'LIKE', '%' . $userName . '%');
+        });
+    }
+
+    // Total count (after filters, before pagination)
+    $total = $query->count();
+
+    // Pagination + ordering
+    $data = $query
+        ->latest()
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => (int) $limit,
+        'offset' => (int) $offset,
+        'data'   => $data
+    ]);
+}
+
 
     /**
      * Create dustbin entry

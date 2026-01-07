@@ -104,13 +104,47 @@ class UserController extends Controller
     /**
      * List all users
      */
-    public function index()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => User::latest()->get()
-        ]);
+
+public function index(Request $request)
+{
+    $query = User::query();
+
+    // 🔍 Filter: Name
+    if ($request->filled('name')) {
+        $query->where('name', 'LIKE', '%' . $request->name . '%');
     }
+
+    // 🔍 Filter: Phone
+    if ($request->filled('phone')) {
+        $query->where('phone', 'LIKE', '%' . $request->phone . '%');
+    }
+
+    // 🔍 Filter: Status (active / inactive)
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // 📄 Pagination
+    $limit  = $request->input('limit', 10);   // default 10
+    $offset = $request->input('offset', 0);   // default 0
+
+    $total = $query->count();
+
+    $users = $query
+        ->latest()
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => $limit,
+        'offset'=> $offset,
+        'data'   => $users
+    ]);
+}
+
 
   /**
      * Show single user

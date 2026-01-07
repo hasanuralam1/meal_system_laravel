@@ -12,13 +12,64 @@ class MarketingController extends Controller
     /**
      * List all marketing entries
      */
-    public function getAllMarketing()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => Marketing::with('user')->latest()->get()
-        ]);
+   
+
+public function getAllMarketing(Request $request)
+{
+    // Base query with user relation
+    $query = Marketing::with('user');
+
+    // 👤 Filter by USER NAME
+    if ($request->filled('user_name')) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'LIKE', '%' . $request->user_name . '%');
+        });
     }
+
+    // 🏪 Filter by MARKET
+    if ($request->filled('market')) {
+        $query->where('market', 'LIKE', '%' . $request->market . '%');
+    }
+
+    // 💰 Filter by PRICE MIN
+    if ($request->filled('price_min')) {
+        $query->where('price', '>=', $request->price_min);
+    }
+
+    // 💰 Filter by PRICE MAX
+    if ($request->filled('price_max')) {
+        $query->where('price', '<=', $request->price_max);
+    }
+
+    // 📅 Filter by DATE
+    if ($request->filled('date')) {
+        $query->whereDate('date', $request->date);
+    }
+
+    // 📄 Pagination
+    $limit  = $request->input('limit', 10);
+    $offset = $request->input('offset', 0);
+
+    // Total count after filters
+    $total = $query->count();
+
+    // Fetch data
+    $data = $query
+        ->latest()
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => (int) $limit,
+        'offset' => (int) $offset,
+        'data'   => $data
+    ]);
+}
+
+
 
     /**
      * Create marketing entry

@@ -12,13 +12,55 @@ class UserMealController extends Controller
     /**
      * List all user meals
      */
-    public function getusersAllMeal()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => UserMeal::with('user')->latest()->get()
-        ]);
+   public function getusersAllMeal(Request $request)
+{
+    // Read values from JSON body
+    $userName = $request->input('user_name');   // optional
+    $date     = $request->input('date');        // optional
+    $day      = $request->input('day');         // optional (0/1)
+    $night    = $request->input('night');       // optional (0/1)
+    $limit    = $request->input('limit', 10);   // default 10
+    $offset   = $request->input('offset', 0);   // default 0
+
+    // Base query
+    $query = UserMeal::with('user');
+
+    // Apply filters only if passed
+    if (!empty($userName)) {
+        $query->where('user_name', 'like', '%' . $userName . '%');
     }
+
+    if (!empty($date)) {
+        $query->whereDate('date', $date);
+    }
+
+    if ($day !== null && $day !== '') {
+        $query->where('day', $day);
+    }
+
+    if ($night !== null && $night !== '') {
+        $query->where('night', $night);
+    }
+
+    // Total count after filters
+    $total = $query->count();
+
+    // Pagination
+    $data = $query
+        ->latest()
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => (int) $limit,
+        'offset' => (int) $offset,
+        'data'   => $data
+    ]);
+}
+
 
     /**
      * Create user meal entry

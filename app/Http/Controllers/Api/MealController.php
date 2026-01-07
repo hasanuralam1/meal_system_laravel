@@ -12,13 +12,66 @@ class MealController extends Controller
     /**
      * List all meals
      */
-    public function getAllmeals()
-    {
-        return response()->json([
-            'status' => true,
-            'data' => Meal::latest()->get()
-        ]);
+   
+
+public function getAllMeals(Request $request)
+{
+    // Get inputs from JSON body
+    $mealName = $request->input('meal_name');
+    $date     = $request->input('date');
+    $dayName  = $request->input('day_name');
+    $day      = $request->input('day');      // NEW
+    $night    = $request->input('night');    // NEW
+    $limit    = $request->input('limit', 10);
+    $offset   = $request->input('offset', 0);
+
+    // Build query
+    $query = Meal::query();
+
+    // Filter by meal name
+    if (!empty($mealName)) {
+        $query->where('meal_name', 'LIKE', '%' . $mealName . '%');
     }
+
+    // Filter by date
+    if (!empty($date)) {
+        $query->whereDate('date', $date);
+    }
+
+    // Filter by day name
+    if (!empty($dayName)) {
+        $query->where('day_name', $dayName);
+    }
+
+    // Filter by day (YES/NO or 1/0)
+    if (!is_null($day)) {
+        $query->where('day', $day);
+    }
+
+    // Filter by night (YES/NO or 1/0)
+    if (!is_null($night)) {
+        $query->where('night', $night);
+    }
+
+    // Total count before pagination
+    $total = $query->count();
+
+    // Pagination
+    $meals = $query
+        ->latest()
+        ->offset($offset)
+        ->limit($limit)
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'total'  => $total,
+        'limit'  => (int) $limit,
+        'offset' => (int) $offset,
+        'data'   => $meals
+    ]);
+}
+
 
     /**
      * Create meal
